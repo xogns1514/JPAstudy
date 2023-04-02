@@ -1,22 +1,25 @@
 package hellojpa;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
+@SequenceGenerator(
+        name = "MEMBER_SEQ_GENERATOR",
+        sequenceName = "MEMBER_SEQ", //매핑할 데이터베이스 시퀀스 이름
+        initialValue = 1, allocationSize = 50)
 public class Member {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+    generator = "MEMBER_SEQ_GENERATOR")
     private Long id;
-    private String name;
 
-    private Member() {
+    @Column(name = "name") //ddl 생성기능
+    private String username;
 
-    }
-
-    public Member(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Member() {
     }
 
     public Long getId() {
@@ -27,11 +30,11 @@ public class Member {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

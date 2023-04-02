@@ -24,7 +24,7 @@ public class JpaMain {
             List<Member> result = em.createQuery("select m from Member as m", Member.class)
                     //멤버 객체를 대상으로 쿼리
                     .setFirstResult(1)
-                    .setMaxResults(10) //1번부터 10개 가져와
+                    .setMaxResults(10) //1번부터 10개 가져옴
                     .getResultList();
             for (Member member : result) {
                 System.out.println("member.name = " + member.getName());*/
@@ -41,12 +41,36 @@ public class JpaMain {
 
             Member findMember = em.find(Member.class, 101L);
 */
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAA"); //persist를 호출하지 않아도 된다
+//            Member member = em.find(Member.class, 150L);
+//            member.setName("AAA"); //persist를 호출하지 않아도 된다
+//
+//            em.detach(member);
+            Member member1 = new Member();
+            member1.setUsername("A");
 
-            em.detach(member);
+            Member member2 = new Member();
+            member2.setUsername("B");
+
+            Member member3 = new Member();
+            member3.setUsername("C");
 
             System.out.println("=======================");
+            // 처음 호출시
+            //DB SEQ = 1 | 1
+            //두번 호출, SEQ에 50개씩 써야하는데 1이라 한번 더 호출
+            //DB SEQ = 51 | 2 memory에서 호출
+            //DB SEQ = 51 | 3 memory에서 호출
+
+//            em.persist(member1);
+//            em.persist(member2);
+//            em.persist(member3);
+
+            System.out.println("member1 = " + member1.getId());
+            System.out.println("member2 = " + member2.getId());
+            System.out.println("member3 = " + member3.getId());
+
+            System.out.println("=======================");
+
             tx.commit();
 
         } catch (Exception e) {
