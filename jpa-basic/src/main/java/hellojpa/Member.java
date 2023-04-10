@@ -1,25 +1,42 @@
 package hellojpa;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@SequenceGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        sequenceName = "MEMBER_SEQ", //매핑할 데이터베이스 시퀀스 이름
-        initialValue = 1, allocationSize = 50)
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-    generator = "MEMBER_SEQ_GENERATOR")
-    private Long id;
 
-    @Column(name = "name") //ddl 생성기능
-    private String username;
+    @Id
+    @GeneratedValue
+    @Column(name = "MEMBER_ID")
+    private Long id;
+    @Column(name = "USERNAME")
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")//연관관계 주인이다. 외래키를 가지고 있결
+    private Team team;
+
 
     public Member() {
+
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+//    public void changeTeam(Team team) {
+//        //Tip)단순한 getter,setter 관례에 의한것이 아니라 로직이 들어간 것 이름 바꾼다
+//        this.team = team;
+//        team.getMembers().add(this);
+//    }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Member(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -30,11 +47,11 @@ public class Member {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 }

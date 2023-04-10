@@ -24,7 +24,7 @@ public class JpaMain {
             List<Member> result = em.createQuery("select m from Member as m", Member.class)
                     //멤버 객체를 대상으로 쿼리
                     .setFirstResult(1)
-                    .setMaxResults(10) //1번부터 10개 가져옴
+                    .setMaxResults(10) //1번부터 10개 가져와
                     .getResultList();
             for (Member member : result) {
                 System.out.println("member.name = " + member.getName());*/
@@ -41,36 +41,33 @@ public class JpaMain {
 
             Member findMember = em.find(Member.class, 101L);
 */
-//            Member member = em.find(Member.class, 150L);
-//            member.setName("AAA"); //persist를 호출하지 않아도 된다
-//
-//            em.detach(member);
-            Member member1 = new Member();
-            member1.setUsername("A");
+            //팀 저장
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            //회원 저장
+            Member member = new Member();
+            member.setName("member1");
+            em.persist(member);
 
-            Member member3 = new Member();
-            member3.setUsername("C");
+            team.addMember(member);
 
-            System.out.println("=======================");
-            // 처음 호출시
-            //DB SEQ = 1 | 1
-            //두번 호출, SEQ에 50개씩 써야하는데 1이라 한번 더 호출
-            //DB SEQ = 51 | 2 memory에서 호출
-            //DB SEQ = 51 | 3 memory에서 호출
+//            team.getMembers().add(member); //**->위에꺼랑 로직을 같이 넣어야 -> 연관관계 편의 메소드로 해결
 
-//            em.persist(member1);
-//            em.persist(member2);
-//            em.persist(member3);
+            em.flush();
+            em.clear();
 
-            System.out.println("member1 = " + member1.getId());
-            System.out.println("member2 = " + member2.getId());
-            System.out.println("member3 = " + member3.getId());
+            Team findTeam = em.find(Team.class, team.getId());
+            //em.flush(), em.clear() 없으면 아직 1차캐시에 있음
+            //따라서 컬레션에 저장되어 있지 않음
+            List<Member> members = findTeam.getMembers();
+            for (Member m : members) {
+                System.out.println("m = " + m.getName());
+            }
+            //
 
             System.out.println("=======================");
-
             tx.commit();
 
         } catch (Exception e) {
